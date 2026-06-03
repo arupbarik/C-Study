@@ -137,7 +137,7 @@ int main(){
     {
       printf("crushed");
     }
-    else if (diff=0)
+    else if (diff==0)
     {
       printf("Draw");
     }
