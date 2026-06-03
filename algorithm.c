@@ -92,5 +92,6 @@ int main(){
    {
      printf("%d\n",ar[i]);
    }
+// Selection Sort
    
 }
