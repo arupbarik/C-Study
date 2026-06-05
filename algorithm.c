@@ -70,6 +70,10 @@ void selectionsort(int arr[],int n){
         arr[i]=temp;
     }
 }
+void Insertionsort(int arr[],int n){
+    
+}
+
 int main(){
     printf("start algorithm\n");
 
@@ -122,4 +126,5 @@ int main(){
 // Insertion sort
    int ary[5]={5,6,8,9,1};
    int b=5;
+   printf("this is insertion sort\n");
 }
