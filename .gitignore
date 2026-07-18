@@ -4,6 +4,7 @@
 *.log
 *.out
 .env
+*.txt
 dma
 #ide folder
 .vscode/   
