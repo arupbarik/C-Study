@@ -88,7 +88,7 @@ void vowel_consonent_count(int n){
     }
     printf("vowel is: %d\t consonent is: %d\n",vcount,count);
 }
-int bubblesort(int n){
+void bubblesort(int n){
     int arr[n];
     for (int i = 0; i < n; i++)
     {
@@ -162,13 +162,14 @@ int linearsearch(int n,int target){
     return -1;
 }
 int main(){
-    int a,b;
-    printf("enter numbers\n");
-    scanf("%d %d",&a,&b);
-    int *m,*n;
-    m=&a;
-    n=&b;
-    pointerswap(m,n);
-    printf("a is :%d\t b is :%d\n",a,b);
+    int n;
+    // int a,b;
+    // printf("enter numbers\n");
+    // scanf("%d %d",&a,&b);
+    // int *m,*n;
+    // m=&a;
+    // n=&b;
+    // pointerswap(m,n);
+    // printf("a is :%d\t b is :%d\n",a,b);
     return 0;
 }
