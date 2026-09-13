@@ -1,150 +1,341 @@
-/* =========================================================================
- * QUEUE OPERATIONS
- * Enqueue (insertion) and Dequeue (deletion) for:
- *   1. Linear Queue
- *   2. Circular Queue
- * ========================================================================= */
+/*
+==============================================================================
+ PROGRAM: Implementation of QUEUE using Array
+          (1) Linear Queue   (2) Circular Queue
+==============================================================================
+
+ This single file contains TWO menu-driven modules:
+   MODULE 1 -> Linear Queue   : ENQUEUE, DEQUEUE, DISPLAY
+   MODULE 2 -> Circular Queue : ENQUEUE_CQ, DEQUEUE_CQ, DISPLAY
+
+ A top-level main menu lets the user choose which queue to work with.
+==============================================================================
+
+--------------------------------------------------------------------------
+PSEUDOCODE : MAIN MENU (Top Level)
+--------------------------------------------------------------------------
+    START
+    LOOP
+        PRINT "1. Linear Queue Operations"
+        PRINT "2. Circular Queue Operations"
+        PRINT "3. Exit"
+        READ choice
+        SWITCH choice:
+            CASE 1: CALL linearQueueMenu()
+            CASE 2: CALL circularQueueMenu()
+            CASE 3: EXIT program
+            DEFAULT: PRINT "Invalid choice"
+    END LOOP
+    STOP
+--------------------------------------------------------------------------
+*/
 
 #include <stdio.h>
-#define MAX 5
+#include <stdlib.h>
 
-/* =========================================================================
- * 1. LINEAR QUEUE
- * =========================================================================
- *
- * PSEUDOCODE: ENQUEUE_LINEAR(QUEUE, FRONT, REAR, MAX, ITEM)
- *   1. IF REAR = MAX - 1 THEN
- *        PRINT "QUEUE OVERFLOW"
- *        EXIT
- *   2. IF FRONT = -1 THEN
- *        SET FRONT = 0
- *   3. SET REAR = REAR + 1
- *   4. SET QUEUE[REAR] = ITEM
- *   5. END
- *
- * PSEUDOCODE: DEQUEUE_LINEAR(QUEUE, FRONT, REAR)
- *   1. IF FRONT = -1 OR FRONT > REAR THEN
- *        PRINT "QUEUE UNDERFLOW"
- *        EXIT
- *   2. SET ITEM = QUEUE[FRONT]
- *   3. SET FRONT = FRONT + 1
- *   4. IF FRONT > REAR THEN
- *        SET FRONT = -1
- *        SET REAR  = -1
- *   5. RETURN ITEM
- *   6. END
- * ========================================================================= */
+#define MAX 5   /* size of the queue (small size chosen to test overflow easily) */
 
-int lqueue[MAX];
+/* ============================================================
+   MODULE 1: LINEAR QUEUE USING ARRAY
+   ============================================================
+
+   PSEUDOCODE : LINEAR QUEUE - DATA STRUCTURE
+   --------------------------------------------------------------
+       DECLARE array queue[MAX]
+       DECLARE front = -1, rear = -1
+
+   PSEUDOCODE : ENQUEUE(value)
+   --------------------------------------------------------------
+       IF rear == MAX - 1 THEN
+           PRINT "Queue Overflow"
+       ELSE
+           IF front == -1 THEN       // first element being inserted
+               SET front = 0
+           SET rear = rear + 1
+           SET queue[rear] = value
+       END IF
+
+   PSEUDOCODE : DEQUEUE()
+   --------------------------------------------------------------
+       IF front == -1 OR front > rear THEN
+           PRINT "Queue Underflow"
+       ELSE
+           SET removedValue = queue[front]
+           SET front = front + 1
+           IF front > rear THEN       // queue became empty, reset
+               SET front = -1
+               SET rear = -1
+           PRINT removedValue
+       END IF
+
+   PSEUDOCODE : DISPLAY()
+   --------------------------------------------------------------
+       IF front == -1 OR front > rear THEN
+           PRINT "Queue is empty"
+       ELSE
+           FOR i = front TO rear
+               PRINT queue[i]
+       END IF
+   ============================================================ */
+
+int lq[MAX];
 int lfront = -1, lrear = -1;
 
-void enqueue_linear(int item) {
+void enqueueLQ(int value) {
     if (lrear == MAX - 1) {
-        printf("Linear Queue Overflow\n");
+        printf("Queue Overflow! Cannot insert %d.\n", value);
         return;
     }
     if (lfront == -1)
         lfront = 0;
     lrear++;
-    lqueue[lrear] = item;
+    lq[lrear] = value;
+    printf("%d inserted into Linear Queue.\n", value);
 }
 
-int dequeue_linear(void) {
-    int item;
+void dequeueLQ(void) {
     if (lfront == -1 || lfront > lrear) {
-        printf("Linear Queue Underflow\n");
-        return -1;
-    }
-    item = lqueue[lfront];
-    lfront++;
-    if (lfront > lrear)
-        lfront = lrear = -1;
-    return item;
-}
-
-/* =========================================================================
- * 2. CIRCULAR QUEUE
- * =========================================================================
- *
- * PSEUDOCODE: ENQUEUE_CIRCULAR(QUEUE, FRONT, REAR, MAX, ITEM)
- *   1. IF (REAR + 1) MOD MAX = FRONT THEN
- *        PRINT "QUEUE OVERFLOW"
- *        EXIT
- *   2. IF FRONT = -1 THEN
- *        SET FRONT = 0
- *        SET REAR  = 0
- *      ELSE
- *        SET REAR = (REAR + 1) MOD MAX
- *   3. SET QUEUE[REAR] = ITEM
- *   4. END
- *
- * PSEUDOCODE: DEQUEUE_CIRCULAR(QUEUE, FRONT, REAR, MAX)
- *   1. IF FRONT = -1 THEN
- *        PRINT "QUEUE UNDERFLOW"
- *        EXIT
- *   2. SET ITEM = QUEUE[FRONT]
- *   3. IF FRONT = REAR THEN
- *        SET FRONT = -1
- *        SET REAR  = -1
- *      ELSE
- *        SET FRONT = (FRONT + 1) MOD MAX
- *   4. RETURN ITEM
- *   5. END
- * ========================================================================= */
-
-int cqueue[MAX];
-int cfront = -1, crear = -1;
-
-void enqueue_circular(int item) {
-    if ((crear + 1) % MAX == cfront) {
-        printf("Circular Queue Overflow\n");
+        printf("Queue Underflow! Queue is empty.\n");
         return;
     }
-    if (cfront == -1) {
-        cfront = 0;
-        crear = 0;
-    } else {
-        crear = (crear + 1) % MAX;
+    int removed = lq[lfront];
+    lfront++;
+    if (lfront > lrear) {   /* queue emptied, reset pointers */
+        lfront = -1;
+        lrear = -1;
     }
-    cqueue[crear] = item;
+    printf("%d deleted from Linear Queue.\n", removed);
 }
 
-int dequeue_circular(void) {
-    int item;
-    if (cfront == -1) {
-        printf("Circular Queue Underflow\n");
-        return -1;
+void displayLQ(void) {
+    if (lfront == -1 || lfront > lrear) {
+        printf("Linear Queue is empty.\n");
+        return;
     }
-    item = cqueue[cfront];
-    if (cfront == crear) {
-        cfront = crear = -1;
+    printf("Linear Queue elements: ");
+    for (int i = lfront; i <= lrear; i++)
+        printf("%d ", lq[i]);
+    printf("\n");
+}
+
+void linearQueueMenu(void) {
+    int choice, value;
+    /*
+    PSEUDOCODE : linearQueueMenu()
+    --------------------------------------------------------------
+        LOOP
+            PRINT "1. ENQUEUE"
+            PRINT "2. DEQUEUE"
+            PRINT "3. DISPLAY"
+            PRINT "4. Back to Main Menu"
+            READ choice
+            SWITCH choice:
+                CASE 1: READ value; CALL enqueueLQ(value)
+                CASE 2: CALL dequeueLQ()
+                CASE 3: CALL displayLQ()
+                CASE 4: RETURN to main menu
+                DEFAULT: PRINT "Invalid choice"
+        END LOOP
+    --------------------------------------------------------------
+    */
+    do {
+        printf("\n--- LINEAR QUEUE MENU ---\n");
+        printf("1. ENQUEUE\n2. DEQUEUE\n3. DISPLAY\n4. Back to Main Menu\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to enqueue: ");
+                scanf("%d", &value);
+                enqueueLQ(value);
+                break;
+            case 2:
+                dequeueLQ();
+                break;
+            case 3:
+                displayLQ();
+                break;
+            case 4:
+                printf("Returning to Main Menu...\n");
+                break;
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    } while (choice != 4);
+}
+
+/* ============================================================
+   MODULE 2: CIRCULAR QUEUE USING ARRAY
+   ============================================================
+
+   PSEUDOCODE : CIRCULAR QUEUE - DATA STRUCTURE
+   --------------------------------------------------------------
+       DECLARE array cqueue[MAX]
+       DECLARE front = -1, rear = -1
+
+   PSEUDOCODE : ENQUEUE_CQ(value)
+   --------------------------------------------------------------
+       IF (rear + 1) MOD MAX == front THEN
+           PRINT "Circular Queue Overflow"
+       ELSE
+           IF front == -1 THEN            // first element
+               SET front = 0
+           SET rear = (rear + 1) MOD MAX
+           SET cqueue[rear] = value
+       END IF
+
+   PSEUDOCODE : DEQUEUE_CQ()
+   --------------------------------------------------------------
+       IF front == -1 THEN
+           PRINT "Circular Queue Underflow"
+       ELSE
+           SET removedValue = cqueue[front]
+           IF front == rear THEN          // only one element existed
+               SET front = -1
+               SET rear = -1
+           ELSE
+               SET front = (front + 1) MOD MAX
+           PRINT removedValue
+       END IF
+
+   PSEUDOCODE : DISPLAY()
+   --------------------------------------------------------------
+       IF front == -1 THEN
+           PRINT "Circular Queue is empty"
+       ELSE
+           SET i = front
+           LOOP
+               PRINT cqueue[i]
+               IF i == rear THEN BREAK
+               SET i = (i + 1) MOD MAX
+           END LOOP
+       END IF
+   ============================================================ */
+
+int cq[MAX];
+int cfront = -1, crear = -1;
+
+void enqueueCQ(int value) {
+    if ((crear + 1) % MAX == cfront) {
+        printf("Circular Queue Overflow! Cannot insert %d.\n", value);
+        return;
+    }
+    if (cfront == -1)
+        cfront = 0;
+    crear = (crear + 1) % MAX;
+    cq[crear] = value;
+    printf("%d inserted into Circular Queue.\n", value);
+}
+
+void dequeueCQ(void) {
+    if (cfront == -1) {
+        printf("Circular Queue Underflow! Queue is empty.\n");
+        return;
+    }
+    int removed = cq[cfront];
+    if (cfront == crear) {     /* only one element was present */
+        cfront = -1;
+        crear = -1;
     } else {
         cfront = (cfront + 1) % MAX;
     }
-    return item;
+    printf("%d deleted from Circular Queue.\n", removed);
 }
 
-/* =========================================================================
- * DEMO DRIVER
- * ========================================================================= */
+void displayCQ(void) {
+    if (cfront == -1) {
+        printf("Circular Queue is empty.\n");
+        return;
+    }
+    printf("Circular Queue elements: ");
+    int i = cfront;
+    while (1) {
+        printf("%d ", cq[i]);
+        if (i == crear)
+            break;
+        i = (i + 1) % MAX;
+    }
+    printf("\n");
+}
 
+void circularQueueMenu(void) {
+    int choice, value;
+    /*
+    PSEUDOCODE : circularQueueMenu()
+    --------------------------------------------------------------
+        LOOP
+            PRINT "1. ENQUEUE_CQ"
+            PRINT "2. DEQUEUE_CQ"
+            PRINT "3. DISPLAY"
+            PRINT "4. Back to Main Menu"
+            READ choice
+            SWITCH choice:
+                CASE 1: READ value; CALL enqueueCQ(value)
+                CASE 2: CALL dequeueCQ()
+                CASE 3: CALL displayCQ()
+                CASE 4: RETURN to main menu
+                DEFAULT: PRINT "Invalid choice"
+        END LOOP
+    --------------------------------------------------------------
+    */
+    do {
+        printf("\n--- CIRCULAR QUEUE MENU ---\n");
+        printf("1. ENQUEUE_CQ\n2. DEQUEUE_CQ\n3. DISPLAY\n4. Back to Main Menu\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to enqueue: ");
+                scanf("%d", &value);
+                enqueueCQ(value);
+                break;
+            case 2:
+                dequeueCQ();
+                break;
+            case 3:
+                displayCQ();
+                break;
+            case 4:
+                printf("Returning to Main Menu...\n");
+                break;
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    } while (choice != 4);
+}
+
+/* ============================================================
+   MAIN FUNCTION - TOP LEVEL MENU
+   ============================================================ */
 int main(void) {
-    printf("--- Linear Queue ---\n");
-    enqueue_linear(10);
-    enqueue_linear(20);
-    enqueue_linear(30);
-    printf("Dequeued: %d\n", dequeue_linear());
-    printf("Dequeued: %d\n", dequeue_linear());
-    enqueue_linear(40);
+    int choice;
 
-    printf("\n--- Circular Queue ---\n");
-    enqueue_circular(1);
-    enqueue_circular(2);
-    enqueue_circular(3);
-    printf("Dequeued: %d\n", dequeue_circular());
-    enqueue_circular(4);
-    enqueue_circular(5);
-    enqueue_circular(6); /* reuses the freed slot */
+    do {
+        printf("\n=================================\n");
+        printf("      QUEUE OPERATIONS MENU\n");
+        printf("=================================\n");
+        printf("1. Linear Queue Operations\n");
+        printf("2. Circular Queue Operations\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                linearQueueMenu();
+                break;
+            case 2:
+                circularQueueMenu();
+                break;
+            case 3:
+                printf("Exiting program. Goodbye!\n");
+                break;
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    } while (choice != 3);
 
     return 0;
 }
