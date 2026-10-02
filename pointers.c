@@ -4,7 +4,7 @@ int main(){
     // just pointer 
     int x=25;
     int* ptr=&x;
-    printf("%d", *ptr);
+    printf("%p", ptr);
     // Function pointers
     
 } 
